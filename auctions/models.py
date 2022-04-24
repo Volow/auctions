@@ -6,10 +6,10 @@ class User(AbstractUser):
     pass
 
 class Catigory(models.Model):
-    catigory_name = models.CharField(max_length=64)
+    catigory_name = models.CharField(max_length=64, unique=True)
 
     def __str__(self):
-        return f"{self.catigory_name}"
+        return self.catigory_name
 
 class Lot(models.Model):
     lot_title = models.CharField(max_length=64)    

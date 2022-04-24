@@ -1,12 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import *
-from .forms import AddLotForm
+from .forms import AddLotForm, CatigoryForm
 
 
 def index(request):
@@ -18,7 +18,23 @@ def index(request):
             "lots" : lots            
         })
 
+@login_required(login_url='login')
+def catigory_list(request):
+    catigories = Catigory.objects.all()
+    if request.method == 'POST':
+        bound_form = CatigoryForm(request.POST)
+        if bound_form.is_valid():
+            bound_form.save()            
+            return redirect('catigories_list_url')
+        else:
+            return render(request, 'auctions/catigories_list.html', {"form": bound_form, "catigories": catigories})
+    else:
+        form = CatigoryForm()
+        return render(request, 'auctions/catigories_list.html', {"form" : form, "catigories": catigories})
+
+
 @login_required(login_url = 'login')
+
 def add_lot(request):
     catigory = Catigory.objects.all()
     if request.method == 'POST':
@@ -34,6 +50,20 @@ def add_lot(request):
         "form": AddLotForm(),
         "catigories" : catigory
     })
+
+
+
+@login_required(login_url = 'login')
+
+def catigory_delete(request, catigory_id):
+    catigory = Catigory.objects.get(pk = catigory_id)
+    if request.method == 'POST':
+        catigory.delete()
+        # form = CatigoryForm()
+        # catigories = Catigory.objects.all()
+    return redirect('catigories_list_url')
+    # else:
+    #     return redirect('catigories_list_url')
 
 def login_view(request):
     if request.method == "POST":

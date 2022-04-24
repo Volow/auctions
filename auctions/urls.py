@@ -1,11 +1,14 @@
+from unicodedata import name
 from django.urls import path
 
-from . import views
+from .views import *
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("login", views.login_view, name="login"),
-    path("logout", views.logout_view, name="logout"),
-    path("register", views.register, name="register"),
-    path ("add/lot", views.add_lot, name="add_lot")
+    path("", index, name="index"),
+    path("login", login_view, name="login"),
+    path("logout", logout_view, name="logout"),
+    path("register", register, name="register"),
+    path("add/lot", add_lot, name="add_lot"),   
+    path('catigories', catigory_list, name='catigories_list_url'),
+    path('catigories/<int:catigory_id>/delete', catigory_delete, name="catigory_delete_url")
 ]
