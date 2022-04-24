@@ -59,11 +59,8 @@ def catigory_delete(request, catigory_id):
     catigory = Catigory.objects.get(pk = catigory_id)
     if request.method == 'POST':
         catigory.delete()
-        # form = CatigoryForm()
-        # catigories = Catigory.objects.all()
     return redirect('catigories_list_url')
-    # else:
-    #     return redirect('catigories_list_url')
+
 
 def login_view(request):
     if request.method == "POST":
