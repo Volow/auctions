@@ -1,5 +1,14 @@
-from turtle import title
+from dataclasses import fields
 from django import forms
+from .models import *
+
+class CatigoryForm(forms.ModelForm):
+    class Meta:
+        model = Catigory
+        fields = ['catigory_name']
+        widget = {
+            'catigory_name': forms.TextInput(attrs={"class" : "form-control"})
+        }
 
 
 class AddLotForm (forms.Form):

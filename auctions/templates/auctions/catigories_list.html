@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Catigories
+{% endblock %}
+
+{% block body %}
+<h3 class="col-md-4 offset-md-4 text-center">Catigories:</h3>
+
+<h2>{{catigory.id}}</h2>
+
+<div class="col-md-4 offset-md-1">
+
+    <lu>
+        {% for catigory in catigories %}
+
+            <li>
+                    {{catigory}}
+                    <form style="display:inline;" action="{% url 'catigory_delete_url' catigory_id=catigory.id %}" method="post">
+                        {% csrf_token%}
+                        <button class="btn btn-link btn-sm" type="submit">Delete</button>
+                    </form>
+                                
+            </li>
+
+        {% empty %}
+
+                <h2> No Catigory </h2>
+
+        {% endfor%} 
+    </lu>
+
+    <hr>
+
+    <form action="{% url 'catigories_list_url'%}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {% if form.error %}
+
+            <div class="alert alert-danger">
+                "Error"
+            </div>
+
+            {% endif %}
+          {{form}}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Add</button>
+    </form>      
+</div>
+    
+{% endblock %}
