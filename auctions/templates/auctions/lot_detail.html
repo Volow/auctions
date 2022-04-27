@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Lot Details
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3 class="text-center">Lot: {{lot.lot_title}}</h3>        
+            <strong>Descriptions:</strong>
+            <p>{{lot.lot_description}}</p>
+            <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
+            <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}}
+            <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start" alt="Lot Img">
+        </div>
+        <div class="col">
+            <div>
+                <p>{{lot.lot_comments.comment_text}}</p>
+            </div>            
+            <form action="{% url 'comment_add_url' lot_id=lot.id %}" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {% if comment_form.comment_text.errors %}
+                        <div class="alert alert-danger">
+                            {{ comment_form.comment_text.errors }}
+                        </div>
+                    {% endif %}
+                    {{comment_form.comment_text}}
+                </div>                
+                <button type="submit" class="btn btn-primary">Add Comment</button>
+            </form>
+        </div>      
+    </div>
+  </div>
+{% endblock %}

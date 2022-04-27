@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .models import *
-from .forms import AddLotForm, CatigoryForm
+from .forms import *
 
 
 def index(request):
@@ -17,6 +17,24 @@ def index(request):
         return render(request, "auctions/index.html",{
             "lots" : lots            
         })
+
+@login_required(login_url='login')
+def lot_detail(request, lot_id):
+    lot = Lot.objects.get(pk = lot_id)
+    comment_form = CommentForm()
+    return render(request, 'auctions/lot_detail.html', {'lot' : lot, 'comment_form':comment_form})
+
+@login_required(login_url='login')
+def comment_add(request, lot_id):
+    if request.method == 'POST':
+        bound_form = CommentForm(request.POST)
+        if bound_form.is_valid():
+            bound_form.save(commit=False)
+            bound_form.comment_user_name = request.user
+            bound_form.save
+            return redirect('lot_detail_url',{'lot_id':lot_id})
+        else:
+            return render(request, "comment_add_url", {"comment_form":bound_form})
 
 @login_required(login_url='login')
 def catigory_list(request):
@@ -35,26 +53,25 @@ def catigory_list(request):
 
 @login_required(login_url = 'login')
 
-def add_lot(request):
-    catigory = Catigory.objects.all()
+def lot_add(request):
+    catigories = Catigory.objects.all()
     if request.method == 'POST':
-        lot_form = AddLotForm(request.POST, request.FILES)
-        if lot_form.is_valid():
-            lot = lot_form.save(commit=False)
-            lot.lot_catigory = request.catigory
+        bound_form = LotForm(request.POST, request.FILES)
+        if bound_form.is_valid():
+            lot = bound_form.save(commit=False)           
             lot.lot_owner = request.user
             lot.save()
-
-
-    return render(request, "auctions/lot.html",{
-        "form": AddLotForm(),
-        "catigories" : catigory
+            return redirect('index')
+        else:
+            return render(request, 'auctions/lot_add.html', {"form":bound_form, "catigories" : catigories})
+    return render(request, "auctions/lot_add.html",{
+        "form": LotForm(),
+        "catigories" : catigories
     })
 
 
 
 @login_required(login_url = 'login')
-
 def catigory_delete(request, catigory_id):
     catigory = Catigory.objects.get(pk = catigory_id)
     if request.method == 'POST':
