@@ -6,35 +6,30 @@ class CatigoryForm(forms.ModelForm):
     class Meta:
         model = Catigory
         fields = ['catigory_name']
-        widget = {
-            'catigory_name': forms.TextInput(attrs={"class" : "form-control"})
+        widgets = {
+            'catigory_name': forms.TextInput(attrs={"class":"form-control"})
+        }
+            
+class LotForm(forms.ModelForm):
+    class Meta:
+        model = Lot
+        fields = [ 'lot_title', 'lot_img', 'lot_description', 'lot_catigory', 'lot_price']
+        widgets = {
+            'lot_title' : forms.TextInput(attrs={"class": "form-control"}),
+            'lot_description' : forms.Textarea(attrs={"rows":"4", "class":"form-control"}),
+            'lot_img' : forms.FileInput(attrs={"class":"form-control"}),
+            # 'lot_catigory' : forms.Select(attrs={"class":"form-control"})
+            'lot_price' : forms.TextInput(attrs={"class":"form-control", 'placeholder': 'price'})
         }
 
-
-class AddLotForm (forms.Form):
-    lot_title = forms.CharField(max_length=64,                                 
-                                 widget=forms.TextInput(
-                                     attrs={
-                                        # "placeholder": "Title",
-                                        "class": "form-control",
-                                        "label":"",
-                                        "id": "exampleFormControlInput1"
-                                            }
-                                 ))
-    lot_description = forms.CharField(widget=forms.Textarea(
-                                        attrs={
-                                            # "placeholder":"Description",
-                                            "rows":"4",
-                                            "class":"form-control",
-                                            "label":"",
-                                            "id": "exampleFormControlInput2"
-                                                }))
-    lot_img = forms.ImageField()
-    lot_img.widget.attrs.update({'class': 'form-control-file'})
-
-    lot_price = forms.DecimalField(max_digits=10, decimal_places=2)
-    lot_price.widget.attrs.update({'placeholder': 'price'})
-
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['comment_text']
+        widgets = {'comment_text': forms.Textarea(attrs={
+            'rows':'4',
+            'class':'form-control'
+        })}
     
 
     

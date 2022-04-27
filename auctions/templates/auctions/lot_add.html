@@ -1,0 +1,77 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<!-- {% if form.errors %}
+    <div class="alert alert-danger">
+        {{form}}
+    </div>
+{% endif %} -->
+
+    <form enctype="multipart/form-data" method="post" action="{% url 'lot_add_url' %}">
+        {% csrf_token %}
+
+        <div class="col-md-4 offset-md-4">
+            <div class="mb-3">
+                {% if form.lot_title.errors %}
+                    <div class="alert alert-danger">
+                        {{form.lot_title.errors}}
+                    </div>
+                {% endif %}
+                <label for="id_lot_title">Title</label>
+                {{form.lot_title}}
+            </div>
+            <div class="mb-3">
+                {% if form.lot_description.errors %}
+                    <div class="alert alert-danger">
+                        {{form.lot_description.errors}}
+                    </div>
+                {% endif %}
+                <label for="id_lot_description">Description</label>               
+                {{form.lot_description}}
+            </div>
+            {% if form.lot_img.errors %}
+                <div class="alert alert-danger">
+                    {{form.lot_img.errors}}
+                </div>
+            {% endif %}
+            <div class="mb-3">                               
+                {{form.lot_img}}
+            </div>
+            <div class="mb-3">
+                {% if form.lot_price.errors %}
+                    <div class="alert alert-danger">
+                        {{form.lot_price.errors}}
+                    </div>
+                {% endif %}
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">              
+                    <span class="input-group-text">$</span>
+                    </div>
+                        {{form.lot_price}}
+                    <div class="input-group-append">
+                    <span class="input-group-text">.00</span>
+                    </div>
+                </div>                
+            </div>
+            <div class="mb-3">
+                {% if form.lot_catigory.errors %}
+                    <div class="alert alert-danger">
+                        {{form.lot_catigory.errors}}
+                    </div>
+                {% endif %}
+                <label for="catigory_select">Catigory</label>
+                <select id="catigory_select" class="form-select"  name="lot_catigory">
+                    {% for catigory in catigories %}
+                        <option value="{{catigory.id}}">{{catigory.catigory_name}}</option>
+                    {% endfor %}
+                </select>
+                  
+            </div>
+                <!-- d-flex justify-content-end -->
+                <button class="btn btn-primary mb-3" type="submit">Save</button> 
+                       
+        </div>         
+    </form>
+
+{% endblock %}
