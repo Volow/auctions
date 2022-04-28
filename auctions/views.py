@@ -21,20 +21,31 @@ def index(request):
 @login_required(login_url='login')
 def lot_detail(request, lot_id):
     lot = Lot.objects.get(pk = lot_id)
+    comments = Comment.objects.filter(lot = lot)
     comment_form = CommentForm()
-    return render(request, 'auctions/lot_detail.html', {'lot' : lot, 'comment_form':comment_form})
+    return render(request, 'auctions/lot_detail.html', {
+        'lot' : lot,
+        'comment_form':comment_form,
+        'comments' : comments})
 
 @login_required(login_url='login')
 def comment_add(request, lot_id):
+    lot = Lot.objects.get(pk = lot_id)
+    comment_form = CommentForm()
     if request.method == 'POST':
         bound_form = CommentForm(request.POST)
         if bound_form.is_valid():
-            bound_form.save(commit=False)
-            bound_form.comment_user_name = request.user
-            bound_form.save
-            return redirect('lot_detail_url',{'lot_id':lot_id})
+            comment = bound_form.save(commit=False)
+            comment.comment_user_name = request.user.username
+            comment.lot = lot
+            comment.save()
+            comments = Comment.objects.filter(lot = lot)
+            return render(request, 'auctions/lot_detail.html', {
+                                                                'lot':lot,
+                                                                'comment_form':comment_form,
+                                                                'comments':comments})
         else:
-            return render(request, "comment_add_url", {"comment_form":bound_form})
+            return render(request, "auctions/lot_detail.html", {"lot":lot, "comment_form":bound_form})
 
 @login_required(login_url='login')
 def catigory_list(request):

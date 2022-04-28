@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 
-from .models import User, Catigory, Lot
+from .models import *
 
 class UserAdmin(admin.ModelAdmin):
     filter_horizontal = ("lot_owner",)
@@ -12,3 +12,4 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User)
 admin.site.register(Catigory)
 admin.site.register(Lot)
+admin.site.register(Comment)
