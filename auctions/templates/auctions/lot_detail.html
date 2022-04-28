@@ -17,6 +17,17 @@
         </div>
         <div class="col">
             <div>
+                <ul>
+                    {% for comment in comments%}
+                    <li>
+                        {{comment.comment_user_name}}
+                        {{comment.comment_data_create}}
+                        {{comment.comment_text}}                    
+                    </li>    
+                    {% endfor %}                
+                </ul>          
+            </div>
+            <div>
                 <p>{{lot.lot_comments.comment_text}}</p>
             </div>            
             <form action="{% url 'comment_add_url' lot_id=lot.id %}" method="post">

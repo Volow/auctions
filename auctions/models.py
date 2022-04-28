@@ -13,10 +13,6 @@ class Catigory(models.Model):
     def __str__(self):
         return self.catigory_name
 
-class Comment(models.Model):
-    comment_text = models.TextField()
-    comment_user_name = models.CharField(max_length=100)
-    comment_data_create = models.DateTimeField(auto_now_add=True)
 
 class Lot(models.Model):
     lot_title = models.CharField(max_length=64, unique=True, verbose_name="Title")    
@@ -32,14 +28,20 @@ class Lot(models.Model):
     lot_owner = models.ForeignKey(User, on_delete=models.CASCADE)  
     # lot_date_create = models.DateTimeField(auto_now_add=True)
     lot_status = models.BooleanField(default=True)
-    lot_comments = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    # lot_comments = models.ForeignKey(Comment, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.lot_title} - catigory:{self.lot_catigory} ${self.lot_price}"
+        return f"{self.id}:{self.lot_title} - catigory:{self.lot_catigory} ${self.lot_price}"
 
     def save(self, *args, **cmd_options):                
         self.lot_title = self.lot_title.capitalize()
         super().save(*args, **cmd_options)
 
+
+class Comment(models.Model):
+    comment_text = models.TextField()
+    comment_user_name = models.CharField(blank=True, max_length=100)
+    comment_data_create = models.DateTimeField(auto_now_add=True)
+    lot = models.ForeignKey(Lot, on_delete=models.CASCADE, related_name="comments", default=None)
 
 
