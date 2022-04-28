@@ -8,15 +8,36 @@
 <div class="container">
     <div class="row">
         <div class="col">
-            <h3 class="text-center">Lot: {{lot.lot_title}}</h3>        
-            <strong>Descriptions:</strong>
-            <p>{{lot.lot_description}}</p>
-            <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
-            <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}}
-            <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start" alt="Lot Img">
+            <div>
+                <h3 class="text-center">Lot: {{lot.lot_title}}</h3>        
+                <strong>Descriptions:</strong>
+                <p>{{lot.lot_description}}</p>
+                <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
+                <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}} <br>
+                <strong>Last Bid: </strong>${{bid|floatformat:"2g"}}
+                <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start mb-3" alt="Lot Img">
+            </div>
+                <br>
+            <div>
+                <form action="{% url 'bid_add_url' lot_id=lot.id %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {% if bid_form.bid.errors %}
+                            
+                                {{ bid_form.bid.errors }}
+                            
+                         {% endif %}
+                    
+                        {{bid_form.bid}}
+                    </div>           
+
+                    <button class="btn btn-primary">Bid</button>
+                                       
+                </form>
+            </div>          
         </div>
         <div class="col">
-            
+            {% if comments %}            
             <div style="max-height: 300px;
                         overflow: auto;
                         border: solid 1px rgb(201, 201, 201);
@@ -37,6 +58,7 @@
                 {% endfor %}
             
             </div>
+            {% endif %}
 
             <br>
 

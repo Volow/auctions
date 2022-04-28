@@ -4,10 +4,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
 
 
 from .models import *
 from .forms import *
+from .util import biggest_bid
 
 
 def index(request):
@@ -19,15 +21,24 @@ def index(request):
             "lots" : lots            
         })
 
+
+
 @login_required(login_url='login')
 def lot_detail(request, lot_id):
     lot = get_object_or_404(Lot, pk = lot_id)
+    bids = Bid.objects.filter(bid_lot = lot)
+
+    bid = biggest_bid(bids)
     comments = Comment.objects.filter(lot = lot)
+    bid_form = BidForm()
     comment_form = CommentForm()
+    # bid_form = BidForm()
     return render(request, 'auctions/lot_detail.html', {
         'lot' : lot,
-        'comment_form':comment_form,
-        'comments' : comments})
+        'comment_form' : comment_form,
+        'bid_form' : bid_form,
+        'comments' : comments,
+        'bid': bid})
 
 @login_required(login_url='login')
 def comment_add(request, lot_id):
@@ -39,14 +50,36 @@ def comment_add(request, lot_id):
             comment.comment_user_name = request.user.username
             comment.lot = lot
             comment.save()
-            # comments = Comment.objects.filter(lot = lot)
             return redirect(lot)
-            # return render(request, 'auctions/lot_detail.html', {
-            #                                                     'lot':lot,
-            #                                                     'comment_form':comment_form,
-            #                                                     'comments':comments})
         else:
             return render(request, "auctions/lot_detail.html", {"lot":lot, "comment_form":bound_form})
+
+def bid_add(request, lot_id):
+    lot = get_object_or_404(Lot, pk = lot_id)
+    comments = Comment.objects.filter(lot = lot)
+    comment_form = CommentForm()
+    bids = Bid.objects.filter(bid_lot = lot)
+    bid = biggest_bid(bids)
+    
+    if request.method == 'POST':
+        bound_form = BidForm(request.POST)
+        context = {'lot': lot, 'bid_form': bound_form, 'bid': bid, 'comments' : comments, 'comment_form':comment_form, }
+        if bound_form.is_valid():
+            if bound_form.cleaned_data['bid'] <= (lot.lot_price and bid):
+                bound_form.add_error('bid', 'Bib must be bigger then price and last bid')
+                return render(request, 'auctions/lot_detail.html', context)
+                # return redirect(lot, bid_form = bound_form)
+            else:
+                bid = bound_form.save(commit=False)
+                bid.bid_user = request.user
+                bid.bid_lot = lot
+                bid.save()
+                return redirect(lot)
+        else:
+            return render(request, "auctions/lot_detail.html", context)
+
+              
+                
 
 @login_required(login_url='login')
 def catigory_list(request):

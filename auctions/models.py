@@ -47,4 +47,13 @@ class Comment(models.Model):
     comment_data_create = models.DateTimeField(auto_now_add=True)
     lot = models.ForeignKey(Lot, on_delete=models.CASCADE, related_name="comments", default=None)
 
+class Bid(models.Model):
+    bid = models.DecimalField(max_digits=20, decimal_places=2, verbose_name="Bid")
+    bid_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    bid_lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
+    bid_data_create = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"${self.bid} for {self.bid_lot}"
+
 
