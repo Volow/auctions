@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.urls import reverse
 
 
 
@@ -25,10 +26,9 @@ class Lot(models.Model):
         max_digits=20, decimal_places=2,
         validators=[MinValueValidator(0.001)], verbose_name="Price",        
         help_text="Min prise is $0.01")
-    lot_owner = models.ForeignKey(User, on_delete=models.CASCADE)  
-    # lot_date_create = models.DateTimeField(auto_now_add=True)
+    lot_owner = models.ForeignKey(User, on_delete=models.CASCADE)   
     lot_status = models.BooleanField(default=True)
-    # lot_comments = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    
 
     def __str__(self):
         return f"{self.id}:{self.lot_title} - catigory:{self.lot_catigory} ${self.lot_price}"
@@ -36,6 +36,9 @@ class Lot(models.Model):
     def save(self, *args, **cmd_options):                
         self.lot_title = self.lot_title.capitalize()
         super().save(*args, **cmd_options)
+
+    def get_absolute_url(self):
+        return reverse('lot_detail_url', args=[self.id])
 
 
 class Comment(models.Model):

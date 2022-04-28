@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+
 
 from .models import *
 from .forms import *
@@ -20,7 +21,7 @@ def index(request):
 
 @login_required(login_url='login')
 def lot_detail(request, lot_id):
-    lot = Lot.objects.get(pk = lot_id)
+    lot = get_object_or_404(Lot, pk = lot_id)
     comments = Comment.objects.filter(lot = lot)
     comment_form = CommentForm()
     return render(request, 'auctions/lot_detail.html', {
@@ -30,8 +31,7 @@ def lot_detail(request, lot_id):
 
 @login_required(login_url='login')
 def comment_add(request, lot_id):
-    lot = Lot.objects.get(pk = lot_id)
-    comment_form = CommentForm()
+    lot = Lot.objects.get(pk = lot_id)    
     if request.method == 'POST':
         bound_form = CommentForm(request.POST)
         if bound_form.is_valid():
@@ -39,11 +39,12 @@ def comment_add(request, lot_id):
             comment.comment_user_name = request.user.username
             comment.lot = lot
             comment.save()
-            comments = Comment.objects.filter(lot = lot)
-            return render(request, 'auctions/lot_detail.html', {
-                                                                'lot':lot,
-                                                                'comment_form':comment_form,
-                                                                'comments':comments})
+            # comments = Comment.objects.filter(lot = lot)
+            return redirect(lot)
+            # return render(request, 'auctions/lot_detail.html', {
+            #                                                     'lot':lot,
+            #                                                     'comment_form':comment_form,
+            #                                                     'comments':comments})
         else:
             return render(request, "auctions/lot_detail.html", {"lot":lot, "comment_form":bound_form})
 
