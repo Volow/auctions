@@ -17,8 +17,7 @@ class LotForm(forms.ModelForm):
         widgets = {
             'lot_title' : forms.TextInput(attrs={"class": "form-control"}),
             'lot_description' : forms.Textarea(attrs={"rows":"4", "class":"form-control"}),
-            'lot_img' : forms.FileInput(attrs={"class":"form-control"}),
-            # 'lot_catigory' : forms.Select(attrs={"class":"form-control"})
+            'lot_img' : forms.FileInput(attrs={"class":"form-control"}),            
             'lot_price' : forms.TextInput(attrs={"class":"form-control", 'placeholder': 'price'})
         }
 

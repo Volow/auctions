@@ -16,20 +16,30 @@
             <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start" alt="Lot Img">
         </div>
         <div class="col">
-            <div>
-                <ul>
-                    {% for comment in comments%}
-                    <li>
-                        {{comment.comment_user_name}}
-                        {{comment.comment_data_create}}
-                        {{comment.comment_text}}                    
-                    </li>    
-                    {% endfor %}                
-                </ul>          
+            
+            <div style="max-height: 300px;
+                        overflow: auto;
+                        border: solid 1px rgb(201, 201, 201);
+                        padding: 20px;
+                        border-radius: 5px;">
+
+                {% for comment in comments%}
+              
+                <figure>
+                    <blockquote class="blockquote">
+                        <p>{{comment.comment_text}}</p>
+                    </blockquote>
+                    <figcaption class="blockquote-footer">
+                        {{comment.comment_user_name}} <cite title="Source Title">{{comment.comment_data_create}}</cite>
+                    </figcaption>
+                </figure>
+
+                {% endfor %}
+            
             </div>
-            <div>
-                <p>{{lot.lot_comments.comment_text}}</p>
-            </div>            
+
+            <br>
+
             <form action="{% url 'comment_add_url' lot_id=lot.id %}" method="post">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -41,7 +51,8 @@
                     {{comment_form.comment_text}}
                 </div>                
                 <button type="submit" class="btn btn-primary">Add Comment</button>
-            </form>
+            </form>                    
+            
         </div>      
     </div>
   </div>
