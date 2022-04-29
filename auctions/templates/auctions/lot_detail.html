@@ -14,7 +14,18 @@
                 <p>{{lot.lot_description}}</p>
                 <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
                 <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}} <br>
-                <strong>Last Bid: </strong>${{bid|floatformat:"2g"}}
+                <strong>Last Bid: </strong>${{bid|floatformat:"2g"}} <br>
+                <strong>Owner: </strong>${{lot.lot_owner}} <br>
+                
+                {% if request.user != lot.lot_owner and not watchlist_counter %}
+                    
+                    <form action="{% url 'add_to_watchlist_url' lot_id=lot.id %}" method="post">
+                        {% csrf_token%}
+                        <button class="btn btn-link btn-sm" type="submit">Add To WatchList</button>
+                    </form>
+
+                {% endif %}
+
                 <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start mb-3" alt="Lot Img">
             </div>
                 <br>

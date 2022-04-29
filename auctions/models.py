@@ -56,4 +56,8 @@ class Bid(models.Model):
     def __str__(self):
         return f"${self.bid} for {self.bid_lot}"
 
+class WatchList(models.Model):
+    watchlist_lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
+    watchlist_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
 

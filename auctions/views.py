@@ -26,6 +26,7 @@ def index(request):
 @login_required(login_url='login')
 def lot_detail(request, lot_id):
     lot = get_object_or_404(Lot, pk = lot_id)
+    watchlist_counter = WatchList.objects.filter(watchlist_user = request.user, watchlist_lot = lot_id).count()
     bids = Bid.objects.filter(bid_lot = lot)
 
     bid = biggest_bid(bids)
@@ -38,7 +39,8 @@ def lot_detail(request, lot_id):
         'comment_form' : comment_form,
         'bid_form' : bid_form,
         'comments' : comments,
-        'bid': bid})
+        'bid': bid,
+        'watchlist_counter':watchlist_counter})
 
 @login_required(login_url='login')
 def comment_add(request, lot_id):
@@ -68,7 +70,7 @@ def bid_add(request, lot_id):
             if bound_form.cleaned_data['bid'] <= (lot.lot_price and bid):
                 bound_form.add_error('bid', 'Bib must be bigger then price and last bid')
                 return render(request, 'auctions/lot_detail.html', context)
-                # return redirect(lot, bid_form = bound_form)
+                # return redirect(lot, ver = "one")
             else:
                 bid = bound_form.save(commit=False)
                 bid.bid_user = request.user
@@ -78,7 +80,31 @@ def bid_add(request, lot_id):
         else:
             return render(request, "auctions/lot_detail.html", context)
 
-              
+
+def add_to_watchlist(request, lot_id):
+    if request.method == 'POST':
+        lot = get_object_or_404(Lot, pk = lot_id, lot_status = True)
+        WatchList.objects.create(watchlist_lot = lot, watchlist_user = request.user)
+        return redirect('watchlist')
+
+def watchlist_lot_delete(request, lot_id):
+    watchlist_record = get_object_or_404(WatchList, pk = lot_id)
+    if request.method == 'POST':
+        watchlist_record.delete()
+        return redirect('watchlist')
+
+
+@login_required(login_url='login')
+def watchlist(request):
+    try:
+        lots = WatchList.objects.filter(watchlist_user = request.user)
+    except:
+        lots = None
+    # lots = watchlist_lots.watchlist_lot
+
+    return render(request, 'auctions/watchlist.html', {'lots' : lots})
+
+
                 
 
 @login_required(login_url='login')
