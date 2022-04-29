@@ -54,10 +54,18 @@ class Bid(models.Model):
     bid_data_create = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"${self.bid} for {self.bid_lot}"
+        return f"{self.bid_user} made bid ${self.bid} for {self.bid_lot.lot_title}"
 
 class WatchList(models.Model):
     watchlist_lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
     watchlist_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Winner(models.Model):
+    winner_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    winner_lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
+    winner_data = models.DateTimeField(auto_now_add=True)
+
+    def __str__ (self):
+        return f"{self.winner_lot.lot_title} - user: {self.winner_user}"
 
 

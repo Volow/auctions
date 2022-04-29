@@ -5,6 +5,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.db.models import Max
 
 
 from .models import *
@@ -32,7 +33,13 @@ def lot_detail(request, lot_id):
     bid = biggest_bid(bids)
     comments = Comment.objects.filter(lot = lot)
     bid_form = BidForm()
-    comment_form = CommentForm()
+    comment_form = CommentForm() 
+
+    try:
+        winner = Bid.objects.filter(bid_lot=lot).latest('bid')
+    except:
+        winner = None
+
     # bid_form = BidForm()
     return render(request, 'auctions/lot_detail.html', {
         'lot' : lot,
@@ -40,7 +47,23 @@ def lot_detail(request, lot_id):
         'bid_form' : bid_form,
         'comments' : comments,
         'bid': bid,
-        'watchlist_counter':watchlist_counter})
+        'watchlist_counter':watchlist_counter,
+        'winner': winner})
+
+def lot_close(request, lot_id):
+    if request.method == 'POST':
+        lot = get_object_or_404(Lot, pk = lot_id)
+        lot.lot_status = False
+        lot.save()
+        bids = Bid.objects.filter(bid_lot = lot)
+        winner_bid = biggest_bid(bids)
+        # last_bid = 0
+        # for bid in bids:
+        #     if bid.bid > last_bid:
+        #         last_bid = bid
+        # winner_bid = Bid.objects.get(bid_lot = lot, bid = winner_bid)
+        # Winner.objects.create(winner_user = winner_bid.bid_user, winner_lot = lot)
+        return redirect(lot)
 
 @login_required(login_url='login')
 def comment_add(request, lot_id):

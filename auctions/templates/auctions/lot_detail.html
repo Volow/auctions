@@ -6,16 +6,43 @@
 
 {% block body %}
 <div class="container">
+    <h3 class="text-center">Lot: {{lot.lot_title}}</h3>   
     <div class="row">
         <div class="col">
+            <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start mb-3" alt="Lot Img">
+        </div>
+        <div class="col">
             <div>
-                <h3 class="text-center">Lot: {{lot.lot_title}}</h3>        
+                     
                 <strong>Descriptions:</strong>
                 <p>{{lot.lot_description}}</p>
                 <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
                 <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}} <br>
                 <strong>Last Bid: </strong>${{bid|floatformat:"2g"}} <br>
-                <strong>Owner: </strong>${{lot.lot_owner}} <br>
+                <strong>Owner: </strong>{{lot.lot_owner}} <br>
+                
+                {% if lot.lot_status %}
+                    <strong>Status: </strong> <strong class="text-success"">active</strong><br>
+                {% else %}
+                    <strong>Status: </strong> <strong class="text-danger"">close</strong> <br>
+                {% endif %}
+                <br>
+
+                {% if not lot.lot_status %}
+                    {% if winner == None %}
+                        <strong>Winner: </strong>nobody<br>  
+                    {% else %}
+                        <strong>Winner: </strong>{{winner.bid_user}}<br>
+                    {% endif %}              
+                {% endif %}
+
+                {% if request.user == lot.lot_owner and lot.lot_status %}
+                    <form action="{% url 'lot_close_url' lot_id=lot.id %}" method="post">
+                        {% csrf_token %}            
+                    <button class="btn btn-primary">Close Lot</button>
+                    </form>
+                {% endif %}
+                
                 
                 {% if request.user != lot.lot_owner and not watchlist_counter %}
                     
@@ -26,9 +53,11 @@
 
                 {% endif %}
 
-                <img src="{{ lot.lot_img.url }}" class="img-fluid rounded float-start mb-3" alt="Lot Img">
+                
             </div>
                 <br>
+
+            {% if request.user != lot.lot_owner and lot.lot_status %}
             <div>
                 <form action="{% url 'bid_add_url' lot_id=lot.id %}" method="post">
                     {% csrf_token %}
@@ -45,7 +74,8 @@
                     <button class="btn btn-primary">Bid</button>
                                        
                 </form>
-            </div>          
+            </div> 
+            {% endif %}         
         </div>
         <div class="col">
             {% if comments %}            
