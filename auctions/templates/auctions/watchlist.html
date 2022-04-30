@@ -13,13 +13,26 @@
             <img src="{{ lot.watchlist_lot.lot_img.url }}" class="card-img-top" alt="Lot Img">
             
             <div class="card-body">
-            <h5 class="card-title">{{lot.watchlist_lot.lot_title}}</h5>
+            <!-- <h5 class="card-title">{{lot.watchlist_lot.lot_title}}</h5>
             <p class="card-text">{{lot.watchlist_lot.lot_description | truncatewords:3}} </p>
             <p class="card-text">Owner: {{lot.watchlist_lot.lot_owner}} </p>
+            <p class="card-text">Status: {{lot.watchlist_lot.lot_status}} </p> -->
+            
+            <strong>{{lot.watchlist_lot.lot_title}}</strong> <br>
+            <strong>Catigory: </strong> {{lot.watchlist_lot.lot_catigory}} <br>            
+            <strong>Start Price: </strong>${{lot.watchlist_lot.lot_price|floatformat:"2g"}} <br>
+            <strong>Owner: </strong>{{lot.watchlist_lot.lot_owner}} <br>
+            
+            {% if lot.watchlist_lot.lot_status %}
+                <strong>Status: </strong> <strong class="text-success"">active</strong><br>
+            {% else %}
+                <strong>Status: </strong> <strong class="text-danger"">close</strong> <br>
+            {% endif %}
+
             <a href="{% url 'lot_detail_url' lot_id=lot.watchlist_lot.id %}" class="btn btn-primary">Show</a>
             </div>
             <div class="card-footer">
-            <small class="text-muted">$ {{lot.watchlist_lot.lot_price|floatformat:"2g"}}</small>
+            <small class="text-muted">Last Bid: ${{lot.watchlist_lot.lot_last_bid|floatformat:"2g"}}</small>
             </div>
         </div>
 

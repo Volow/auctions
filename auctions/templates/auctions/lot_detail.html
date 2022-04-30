@@ -18,7 +18,7 @@
                 <p>{{lot.lot_description}}</p>
                 <strong>Catigory:</strong> {{lot.lot_catigory}} <br>
                 <strong>Prise: </strong>${{lot.lot_price|floatformat:"2g"}} <br>
-                <strong>Last Bid: </strong>${{bid|floatformat:"2g"}} <br>
+                <strong>Last Bid: </strong>${{bid.bid|default:"0"|floatformat:"2g"}} <br>
                 <strong>Owner: </strong>{{lot.lot_owner}} <br>
                 
                 {% if lot.lot_status %}

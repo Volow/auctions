@@ -21,37 +21,21 @@ class CloseList(ObjectIndexMexin, View):
     model = Lot
     template = 'auctions/closelist.html'
 
-# def index(request):
-#     if not request.user.is_authenticated:
-#         return HttpResponseRedirect(reverse("login"))
-#     else:
-#         lots = Lot.objects.all()        
-#         return render(request, "auctions/index.html",{
-#             "lots" : lots            
-#         })
-
-# def closelist(request):
-#     if not request.user.is_authenticated:
-#         return HttpResponseRedirect(reverse("login"))
-#     else:
-#         lots = Lot.objects.all()        
-#         return render(request, "auctions/closelist.html",{
-#             "lots" : lots            
-#         })
-
-
 
 @login_required(login_url='login')
 def lot_detail(request, lot_id):
     lot = get_object_or_404(Lot, pk = lot_id)
     watchlist_counter = WatchList.objects.filter(watchlist_user = request.user, watchlist_lot = lot_id).count()
-    bids = Bid.objects.filter(bid_lot = lot)
+    # bids = Bid.objects.filter(bid_lot = lot)
 
-    bid = biggest_bid(bids)
+    # bid = biggest_bid(bids)
     comments = Comment.objects.filter(lot = lot)
     bid_form = BidForm()
     comment_form = CommentForm() 
-
+    try:
+        bid = Bid.objects.filter(bid_lot = lot).latest('bid')
+    except:
+        bid = None
     try:
         winner = Bid.objects.filter(bid_lot=lot).latest('bid')
     except:
@@ -97,9 +81,8 @@ def bid_add(request, lot_id):
     lot = get_object_or_404(Lot, pk = lot_id)
     comments = Comment.objects.filter(lot = lot)
     comment_form = CommentForm()
-    bids = Bid.objects.filter(bid_lot = lot)
-    bid = biggest_bid(bids)
-    
+    bid = lot.lot_last_bid
+        
     if request.method == 'POST':
         bound_form = BidForm(request.POST)
         context = {'lot': lot, 'bid_form': bound_form, 'bid': bid, 'comments' : comments, 'comment_form':comment_form, }
@@ -113,6 +96,8 @@ def bid_add(request, lot_id):
                 bid.bid_user = request.user
                 bid.bid_lot = lot
                 bid.save()
+                lot.lot_last_bid = bound_form.cleaned_data['bid']
+                lot.save()
                 return redirect(lot)
         else:
             return render(request, "auctions/lot_detail.html", context)
@@ -137,11 +122,7 @@ def watchlist(request):
         lots = WatchList.objects.filter(watchlist_user = request.user)
     except:
         lots = None
-    # lots = watchlist_lots.watchlist_lot
-
     return render(request, 'auctions/watchlist.html', {'lots' : lots})
-
-
                 
 
 @login_required(login_url='login')

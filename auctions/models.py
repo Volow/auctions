@@ -26,6 +26,7 @@ class Lot(models.Model):
         max_digits=20, decimal_places=2,
         validators=[MinValueValidator(0.001)], verbose_name="Price",        
         help_text="Min prise is $0.01")
+    lot_last_bid = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     lot_owner = models.ForeignKey(User, on_delete=models.CASCADE)   
     lot_status = models.BooleanField(default=True)
     

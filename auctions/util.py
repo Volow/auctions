@@ -2,12 +2,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 
-def biggest_bid(bids):
-    biggest_bid = 0
-    for bid in bids:
-        if bid.bid > biggest_bid:
-            biggest_bid = bid.bid
-    return biggest_bid
+# def biggest_bid(bids):
+#     biggest_bid = 0
+#     for bid in bids:
+#         if bid.bid > biggest_bid:
+#             biggest_bid = bid.bid
+#     return biggest_bid
 
 
 class ObjectIndexMexin:
