@@ -17,7 +17,7 @@
 
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                        <a class="nav-link" href="{% url 'index' %}">Active Lots</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
@@ -28,6 +28,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'watchlist' %}">Watched List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'closelist' %}">Closed Lots</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

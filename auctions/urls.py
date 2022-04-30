@@ -16,5 +16,6 @@ urlpatterns = [
     path('watchlist', watchlist, name="watchlist"),
     path('watchlist/<int:lot_id>/delete', watchlist_lot_delete, name="watchlist_lot_delete_url"),
     path('catigories', catigory_list, name='catigories_list_url'),
-    path('catigories/<int:catigory_id>/delete', catigory_delete, name="catigory_delete_url")
+    path('catigories/<int:catigory_id>/delete', catigory_delete, name="catigory_delete_url"),
+    path('closelist', closelist, name="closelist")
 ]

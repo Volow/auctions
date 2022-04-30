@@ -22,6 +22,15 @@ def index(request):
             "lots" : lots            
         })
 
+def closelist(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    else:
+        lots = Lot.objects.all()        
+        return render(request, "auctions/closelist.html",{
+            "lots" : lots            
+        })
+
 
 
 @login_required(login_url='login')
@@ -55,14 +64,11 @@ def lot_close(request, lot_id):
         lot = get_object_or_404(Lot, pk = lot_id)
         lot.lot_status = False
         lot.save()
-        bids = Bid.objects.filter(bid_lot = lot)
-        winner_bid = biggest_bid(bids)
-        # last_bid = 0
-        # for bid in bids:
-        #     if bid.bid > last_bid:
-        #         last_bid = bid
-        # winner_bid = Bid.objects.get(bid_lot = lot, bid = winner_bid)
-        # Winner.objects.create(winner_user = winner_bid.bid_user, winner_lot = lot)
+        try:
+            winner_bid = Bid.objects.filter(bid_lot = lot).latest('bid')
+            Winner.objects.create(winner_user = winner_bid.bid_user, winner_lot = lot)
+        except:
+            pass       
         return redirect(lot)
 
 @login_required(login_url='login')

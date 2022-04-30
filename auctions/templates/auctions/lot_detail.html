@@ -32,7 +32,12 @@
                     {% if winner == None %}
                         <strong>Winner: </strong>nobody<br>  
                     {% else %}
-                        <strong>Winner: </strong>{{winner.bid_user}}<br>
+                        <strong>Winner: </strong>
+                            {% if request.user == winner.bid_user %}
+                                <strong class="text-success">You are WINNER!</strong> <br>
+                            {% else %}
+                                <strong>{{winner.bid_user}}</strong><br>
+                            {% endif %}
                     {% endif %}              
                 {% endif %}
 
@@ -44,7 +49,7 @@
                 {% endif %}
                 
                 
-                {% if request.user != lot.lot_owner and not watchlist_counter %}
+                {% if request.user != lot.lot_owner and not watchlist_counter and lot.lot_status %}
                     
                     <form action="{% url 'add_to_watchlist_url' lot_id=lot.id %}" method="post">
                         {% csrf_token%}
