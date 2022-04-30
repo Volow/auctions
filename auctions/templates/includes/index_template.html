@@ -1,0 +1,16 @@
+<div class="col">
+    <div class="card h-100">
+      
+        <img src="{{ lot.lot_img.url }}" class="card-img-top" alt="Lot Img">
+      
+      <div class="card-body">
+        <h5 class="card-title">{{lot.lot_title}}</h5>
+        <p class="card-text">{{lot.lot_description | truncatewords:3}} </p>
+        <p class="card-text">Owner: {{lot.lot_owner}} </p>
+        <a href="{% url 'lot_detail_url' lot_id=lot.id %}" class="btn btn-primary">Show</a>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">$ {{lot.lot_price|floatformat:"2g"}}</small>
+      </div>
+    </div>
+  </div>

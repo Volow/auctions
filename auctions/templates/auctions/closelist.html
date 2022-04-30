@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h3 class="col-md-4 offset-md-4 text-center">Closed Lots</h3>
+
+<div class="row row-cols-1 row-cols-md-5 g-3">
+
+    {% for lot in lots %}
+
+        {% if not lot.lot_status %}
+
+            {% include 'includes/index_template.html' %}    
+
+        {% endif %} 
+
+    {% empty %}
+
+            <h2> No Lots </h2>
+
+    {% endfor%}
+    
+  </div>   
+  
+
+{% endblock %}

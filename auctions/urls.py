@@ -3,7 +3,7 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path("", index, name="index"),
+    path("", Index.as_view(), name="index"),
     path("login", login_view, name="login"),
     path("logout", logout_view, name="logout"),
     path("register", register, name="register"),
@@ -17,5 +17,5 @@ urlpatterns = [
     path('watchlist/<int:lot_id>/delete', watchlist_lot_delete, name="watchlist_lot_delete_url"),
     path('catigories', catigory_list, name='catigories_list_url'),
     path('catigories/<int:catigory_id>/delete', catigory_delete, name="catigory_delete_url"),
-    path('closelist', closelist, name="closelist")
+    path('closelist', CloseList.as_view(), name="closelist")
 ]

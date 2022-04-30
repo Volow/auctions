@@ -6,30 +6,38 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models import Max
+from django.views.generic import View
 
 
 from .models import *
 from .forms import *
-from .util import biggest_bid
+from .util import *
 
+class Index(ObjectIndexMexin, View):
+    model = Lot
+    template = 'auctions/index.html'
 
-def index(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    else:
-        lots = Lot.objects.all()        
-        return render(request, "auctions/index.html",{
-            "lots" : lots            
-        })
+class CloseList(ObjectIndexMexin, View):
+    model = Lot
+    template = 'auctions/closelist.html'
 
-def closelist(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    else:
-        lots = Lot.objects.all()        
-        return render(request, "auctions/closelist.html",{
-            "lots" : lots            
-        })
+# def index(request):
+#     if not request.user.is_authenticated:
+#         return HttpResponseRedirect(reverse("login"))
+#     else:
+#         lots = Lot.objects.all()        
+#         return render(request, "auctions/index.html",{
+#             "lots" : lots            
+#         })
+
+# def closelist(request):
+#     if not request.user.is_authenticated:
+#         return HttpResponseRedirect(reverse("login"))
+#     else:
+#         lots = Lot.objects.all()        
+#         return render(request, "auctions/closelist.html",{
+#             "lots" : lots            
+#         })
 
 
 
