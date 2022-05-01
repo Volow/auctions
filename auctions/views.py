@@ -26,12 +26,8 @@ class CloseList(ObjectIndexMexin, View):
 def lot_detail(request, lot_id):
     lot = get_object_or_404(Lot, pk = lot_id)
     watchlist_counter = WatchList.objects.filter(watchlist_user = request.user, watchlist_lot = lot_id).count()
-    # bids = Bid.objects.filter(bid_lot = lot)
-
-    # bid = biggest_bid(bids)
     comments = Comment.objects.filter(lot = lot)
-    bid_form = BidForm()
-    comment_form = CommentForm() 
+    
     try:
         bid = Bid.objects.filter(bid_lot = lot).latest('bid')
     except:
@@ -41,11 +37,10 @@ def lot_detail(request, lot_id):
     except:
         winner = None
 
-    # bid_form = BidForm()
     return render(request, 'auctions/lot_detail.html', {
         'lot' : lot,
-        'comment_form' : comment_form,
-        'bid_form' : bid_form,
+        'comment_form' : CommentForm(),
+        'bid_form' : BidForm(),
         'comments' : comments,
         'bid': bid,
         'watchlist_counter':watchlist_counter,
@@ -82,7 +77,7 @@ def bid_add(request, lot_id):
     comments = Comment.objects.filter(lot = lot)
     comment_form = CommentForm()
     bid = lot.lot_last_bid
-        
+
     if request.method == 'POST':
         bound_form = BidForm(request.POST)
         context = {'lot': lot, 'bid_form': bound_form, 'bid': bid, 'comments' : comments, 'comment_form':comment_form, }
